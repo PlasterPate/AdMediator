@@ -1,0 +1,14 @@
+ext {
+    buildVersions = [
+            compileSdkVersion: 29,
+            buildToolsVersion: "29.0.2",
+            minSdkVersion    : 24,
+            targetSdkVersion : 29
+    ]
+    libraries = [
+            appCompat:              "1.2.0",
+            constraintLayout:       "2.0.4",
+            adMediator:             "1.0.0",
+            adMediatorVersionCode:  1
+    ]
+}
