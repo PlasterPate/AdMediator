@@ -23,6 +23,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 }
 
 dependencies {
@@ -33,4 +38,26 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // Tapsell
+    implementation "ir.tapsell.sdk:tapsell-sdk-android:$libraries.tapsell"
+
+    // Chartboost
+    implementation "com.chartboost:chartboost-sdk:$libraries.chartboost"
+
+    // HTTP client - Retrofit with OkHttp
+    implementation "com.squareup.retrofit2:retrofit:$libraries.retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$libraries.retrofit"
+
+    // JSON converter Gson
+    implementation "com.squareup.retrofit2:converter-gson:$libraries.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$libraries.retrofit"
+
+    // RxJava
+    implementation "io.reactivex.rxjava2:rxjava:$libraries.rxjava"
+    implementation "io.reactivex.rxjava2:rxandroid:$libraries.rxandroid"
+
+    // Google Play Services
+    implementation "com.google.android.gms:play-services-base:$libraries.playServicesBase"
+    implementation "com.google.android.gms:play-services-ads-identifier:$libraries.playServicesAdsIdentifier"
 }

@@ -2,13 +2,20 @@ ext {
     buildVersions = [
             compileSdkVersion: 29,
             buildToolsVersion: "29.0.2",
-            minSdkVersion    : 24,
+            minSdkVersion    : 21,
             targetSdkVersion : 29
     ]
     libraries = [
-            appCompat:              "1.2.0",
-            constraintLayout:       "2.0.4",
-            adMediator:             "1.0.0",
-            adMediatorVersionCode:  1
+            appCompat:                  "1.2.0",
+            constraintLayout:           "2.0.4",
+            adMediator:                 "1.0.0",
+            adMediatorVersionCode:      1,
+            tapsell:                    "4.6.2",
+            chartboost:                 "8.2.0",
+            retrofit:                   "2.4.0",
+            rxjava:                     "2.2.9",
+            rxandroid:                  "2.1.1",
+            playServicesBase:           "17.6.0",
+            playServicesAdsIdentifier:  "17.0.0"
     ]
 }
