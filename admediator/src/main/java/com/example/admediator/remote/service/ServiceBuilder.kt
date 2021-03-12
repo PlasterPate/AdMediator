@@ -1,4 +1,4 @@
-package com.example.admediator.service
+package com.example.admediator.remote.service
 
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
