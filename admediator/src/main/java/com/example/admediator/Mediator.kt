@@ -1,10 +1,15 @@
 package com.example.admediator
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import com.chartboost.sdk.Chartboost
+import com.example.admediator.constants.AdNetwork
+import com.example.admediator.constants.ZoneType
 import com.example.admediator.data.AdNetworkEntity
 import com.example.admediator.repository.AdRepository
+import com.unity3d.ads.UnityAds
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -13,20 +18,21 @@ import ir.tapsell.sdk.Tapsell
 class Mediator {
 
     private val CB_SIGNATURE = "dummy_signature"
+
     private val adRepository = AdRepository()
     private lateinit var networks: List<AdNetworkEntity>
 
-    fun initialize(application: Application , appId: String, callback: InitializeCallback){
+    fun initialize(application: Application, appId: String, listener: InitializeListener){
         adRepository.getAdNetworks(appId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 networks = it
                 initNetworks(application)
-                callback.onSuccess()
+                listener.onSuccess()
             }, {
-                Log.e("Mediator", "throwable + ${it.message}")
-                callback.onError(it.message!!)
+                Log.e("Mediator", "InitializeError:".plus(it.message))
+                listener.onError(it.message!!)
             }).also {
                 CompositeDisposable(it)
             }
@@ -34,10 +40,13 @@ class Mediator {
 
     private fun initNetworks(application: Application ){
         networks.forEach{ net ->
-            if ("Tapsell" in net.name){
-                Tapsell.initialize(application, net.appId)
-            }else if ("Chartboost" in net.name){
-                Chartboost.startWithAppId(application, net.appId, CB_SIGNATURE)
+            when(net.name){
+                AdNetwork.TAPSELL ->
+                    Tapsell.initialize(application, net.appId)
+                AdNetwork.CHARTBOOST ->
+                    Chartboost.startWithAppId(application, net.appId, CB_SIGNATURE)
+                AdNetwork.UNITY_ADS ->
+                    UnityAds.initialize(application, net.appId)
             }
         }
     }
