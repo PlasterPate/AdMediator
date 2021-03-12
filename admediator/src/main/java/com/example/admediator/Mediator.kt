@@ -16,15 +16,17 @@ class Mediator {
     private val adRepository = AdRepository()
     private lateinit var networks: List<AdNetworkEntity>
 
-    fun initialize(application: Application , appId: String){
+    fun initialize(application: Application , appId: String, callback: InitializeCallback){
         adRepository.getAdNetworks(appId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 networks = it
                 initNetworks(application)
+                callback.onSuccess()
             }, {
                 Log.e("Mediator", "throwable + ${it.message}")
+                callback.onError(it.message!!)
             }).also {
                 CompositeDisposable(it)
             }
@@ -38,6 +40,5 @@ class Mediator {
                 Chartboost.startWithAppId(application, net.appId, CB_SIGNATURE)
             }
         }
-
     }
 }
