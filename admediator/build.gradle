@@ -45,6 +45,9 @@ dependencies {
     // Chartboost
     implementation "com.chartboost:chartboost-sdk:$libraries.chartboost"
 
+    // Unity Ads
+    implementation project(":unity-ads")
+
     // HTTP client - Retrofit with OkHttp
     implementation "com.squareup.retrofit2:retrofit:$libraries.retrofit"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$libraries.retrofit"
