@@ -71,7 +71,6 @@ class Mediator {
             }).also {
                 CompositeDisposable(it)
             }
-        Context.WINDOW_SERVICE
     }
 
     private fun zoneConfigTimeout(zoneId: String, timeout: Long) {
