@@ -11,7 +11,17 @@ internal abstract class BaseNetwork(val appId: String) {
 
     abstract fun initialize(application: Application)
 
-    abstract fun requestAd(context: Context, zoneId: String, zoneType: String, listener: AdRequestListener) : AdState
+    abstract fun requestAd(
+        context: Context,
+        zoneId: String,
+        zoneType: String,
+        listener: AdRequestListener
+    ): AdState
 
-    abstract fun showAd(activity: Activity, adState: AdState, zoneId: String, listener: AdShowListener)
+    abstract fun showAd(
+        activity: Activity,
+        adState: AdState,
+        zoneId: String,
+        listener: AdShowListener
+    )
 }

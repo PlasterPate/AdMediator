@@ -7,7 +7,8 @@ import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Single
 
-internal class AdLocalDataSourceImpl(private var sharedPreferences: SharedPreferences) : AdLocalDataSource {
+internal class AdLocalDataSourceImpl(private var sharedPreferences: SharedPreferences) :
+    AdLocalDataSource {
 
     private val KEY_ZONECONFIG = "zoneconfig."
     private val KEY_AD_ID = "ad_id."
@@ -26,7 +27,7 @@ internal class AdLocalDataSourceImpl(private var sharedPreferences: SharedPrefer
             zoneConfig?.let {
                 Gson().fromJson(it, ZoneConfigEntity::class.java)
             } ?: // Return an empty entity if no config found
-                ZoneConfigEntity("", listOf(), 0)
+            ZoneConfigEntity("", listOf(), 0)
         )
     }
 
@@ -40,7 +41,7 @@ internal class AdLocalDataSourceImpl(private var sharedPreferences: SharedPrefer
 
     override fun saveAdState(adState: AdState): Completable {
         return Completable.fromAction {
-            sharedPreferences.edit().apply{
+            sharedPreferences.edit().apply {
                 putString(KEY_AD_ID, Gson().toJson(adState))
             }
         }
@@ -51,14 +52,13 @@ internal class AdLocalDataSourceImpl(private var sharedPreferences: SharedPrefer
         return Single.just(
             adState?.let {
                 Gson().fromJson(adState, AdState::class.java)
-            }?:
-                AdState("", "", "")
+            } ?: AdState("", "", "")
         )
     }
 
     override fun removeAdState(): Completable {
         return Completable.fromAction {
-            sharedPreferences.edit().apply{
+            sharedPreferences.edit().apply {
                 remove(KEY_AD_ID)
             }
         }

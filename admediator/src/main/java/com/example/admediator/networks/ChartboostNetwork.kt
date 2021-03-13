@@ -12,7 +12,7 @@ import com.example.admediator.data.AdState
 import com.example.admediator.listeners.AdRequestListener
 import com.example.admediator.listeners.AdShowListener
 
-internal class ChartboostNetwork(appId: String) : BaseNetwork(appId){
+internal class ChartboostNetwork(appId: String) : BaseNetwork(appId) {
 
     private val CB_SIGNATURE = "dummy_signature"
 
@@ -22,11 +22,16 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId){
 
     private var reqResponse = AdState(AdNetwork.CHARTBOOST, "", "")
 
-    override fun initialize(application: Application){
+    override fun initialize(application: Application) {
         Chartboost.startWithAppId(application, appId, CB_SIGNATURE)
     }
 
-    override fun requestAd(context: Context, zoneId: String, zoneType: String, listener: AdRequestListener) : AdState {
+    override fun requestAd(
+        context: Context,
+        zoneId: String,
+        zoneType: String,
+        listener: AdRequestListener
+    ): AdState {
         adReqListener = listener
         Chartboost.setDelegate(chartboostCacheDelegate)
         when (zoneType) {
@@ -38,7 +43,8 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId){
                 reqResponse = reqResponse.copy(type = ZoneType.REWARDED)
                 Chartboost.cacheRewardedVideo(zoneId)
             }
-            else -> {}
+            else -> {
+            }
         }
         return reqResponse
     }
@@ -76,7 +82,12 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId){
         }
     }
 
-    override fun showAd(activity: Activity, adState: AdState, zoneId: String, listener: AdShowListener){
+    override fun showAd(
+        activity: Activity,
+        adState: AdState,
+        zoneId: String,
+        listener: AdShowListener
+    ) {
         adShowListener = listener
         Chartboost.setDelegate(chartboostShowDelegate)
         when (adState.type) {
@@ -92,11 +103,12 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId){
                 else
                     listener.onError("Chartboost ad not available.")
             }
-            else -> {}
+            else -> {
+            }
         }
     }
 
-    private val chartboostShowDelegate: ChartboostDelegate = object : ChartboostDelegate(){
+    private val chartboostShowDelegate: ChartboostDelegate = object : ChartboostDelegate() {
 
         // --------Interstitial delegate methods--------
 

@@ -10,14 +10,19 @@ import com.example.admediator.listeners.AdRequestListener
 import com.example.admediator.listeners.AdShowListener
 import ir.tapsell.sdk.*
 
-internal class TapsellNetwork(appId: String) : BaseNetwork(appId){
+internal class TapsellNetwork(appId: String) : BaseNetwork(appId) {
     private var reqResponse = AdState(AdNetwork.TAPSELL, "", "")
 
-    override fun initialize(application: Application){
+    override fun initialize(application: Application) {
         Tapsell.initialize(application, appId)
     }
 
-    override fun requestAd(context: Context, zoneId: String, zoneType: String, listener: AdRequestListener) : AdState {
+    override fun requestAd(
+        context: Context,
+        zoneId: String,
+        zoneType: String,
+        listener: AdRequestListener
+    ): AdState {
         Tapsell.requestAd(context, zoneId, TapsellAdRequestOptions(),
             object : TapsellAdRequestListener() {
                 override fun onAdAvailable(adId: String?) {
@@ -34,24 +39,29 @@ internal class TapsellNetwork(appId: String) : BaseNetwork(appId){
         return reqResponse
     }
 
-    override fun showAd(activity: Activity, adState: AdState, zoneId: String, listener: AdShowListener){
+    override fun showAd(
+        activity: Activity,
+        adState: AdState,
+        zoneId: String,
+        listener: AdShowListener
+    ) {
         Tapsell.showAd(activity, zoneId, adState.id, TapsellShowOptions(),
-        object : TapsellAdShowListener(){
-            override fun onOpened() {
-                listener.onOpened()
-            }
+            object : TapsellAdShowListener() {
+                override fun onOpened() {
+                    listener.onOpened()
+                }
 
-            override fun onClosed() {
-                listener.onClosed()
-            }
+                override fun onClosed() {
+                    listener.onClosed()
+                }
 
-            override fun onError(message: String?) {
-                listener.onError(message)
-            }
+                override fun onError(message: String?) {
+                    listener.onError(message)
+                }
 
-            override fun onRewarded(completed: Boolean) {
-                listener.onRewarded(completed)
-            }
-        })
+                override fun onRewarded(completed: Boolean) {
+                    listener.onRewarded(completed)
+                }
+            })
     }
 }

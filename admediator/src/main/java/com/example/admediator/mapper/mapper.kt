@@ -1,15 +1,15 @@
-package com.example.admediator
+package com.example.admediator.mapper
 
 import com.example.admediator.data.*
 
-internal fun AdNetworkDto.toAdNetworkEntity() : AdNetworkEntity{
+internal fun AdNetworkDto.toAdNetworkEntity(): AdNetworkEntity {
     return AdNetworkEntity(
         name = name,
         appId = appId
     )
 }
 
-internal fun NetworkConfigDto.toNetworkConfigEntity() : NetworkConfigEntity{
+internal fun NetworkConfigDto.toNetworkConfigEntity(): NetworkConfigEntity {
     return NetworkConfigEntity(
         adNetwork = adNetwork,
         zoneId = zoneId,
@@ -17,7 +17,7 @@ internal fun NetworkConfigDto.toNetworkConfigEntity() : NetworkConfigEntity{
     )
 }
 
-internal fun ZoneConfigDto.toZoneConfigEntity() : ZoneConfigEntity{
+internal fun ZoneConfigDto.toZoneConfigEntity(): ZoneConfigEntity {
     return ZoneConfigEntity(
         zoneType = zoneType,
         waterfall = waterfall.map { it.toNetworkConfigEntity() },

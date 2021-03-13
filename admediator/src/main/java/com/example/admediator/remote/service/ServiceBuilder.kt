@@ -13,7 +13,7 @@ internal object ServiceBuilder {
         .baseUrl(BASE_URL)
         .build()
 
-    fun<T> buildService(service: Class<T>): T{
+    fun <T> buildService(service: Class<T>): T {
         return retrofit.create(service)
     }
 }

@@ -29,11 +29,11 @@ class Mediator {
 
     private var networks = mutableMapOf<String, BaseNetwork>()
 
-    fun initialize(application: Application, appId: String, listener: InitializeListener){
+    fun initialize(application: Application, appId: String, listener: InitializeListener) {
         adRepository.getAdNetworks(appId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({netList ->
+            .subscribe({ netList ->
                 initNetworks(netList, application)
                 listener.onSuccess()
             }, {
@@ -44,20 +44,20 @@ class Mediator {
             }
     }
 
-    private fun initNetworks(networkList: List<AdNetworkEntity>, application: Application ){
-        networkList.forEach{ adNet ->
+    private fun initNetworks(networkList: List<AdNetworkEntity>, application: Application) {
+        networkList.forEach { adNet ->
             val networkInstance = networkFactory.createNetwork(adNet)
             networkInstance.initialize(application)
             networks[adNet.name] = networkInstance
         }
     }
 
-    fun requestAd(context: Context, zoneId: String, listener: AdRequestListener){
+    fun requestAd(context: Context, zoneId: String, listener: AdRequestListener) {
         adRepository.initSharedPreferences(context)
         adRepository.getZoneConfig(zoneId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({zoneConfig ->
+            .subscribe({ zoneConfig ->
                 zoneConfigTimeout(zoneId, zoneConfig.timeout)
                 requestAdFromWaterfall(context, zoneConfig, listener)
             }, {
@@ -69,7 +69,7 @@ class Mediator {
         Context.WINDOW_SERVICE
     }
 
-    private fun zoneConfigTimeout(zoneId: String, timeout: Long){
+    private fun zoneConfigTimeout(zoneId: String, timeout: Long) {
         adRepository.removeZoneConfig(zoneId)
             .delaySubscription(timeout, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
@@ -77,21 +77,32 @@ class Mediator {
             .subscribe()
     }
 
-    private fun requestAdFromWaterfall(context: Context, zoneConfig: ZoneConfigEntity, listener: AdRequestListener){
-        val singles = mutableListOf<Single<AdState>>()
-        zoneConfig.waterfall.forEach {netConfig ->
-            if (netConfig.adNetwork in networks.keys){
-                singles.add(Single.just(
-                    networks[netConfig.adNetwork]!!.requestAd(context, netConfig.zoneId, zoneConfig.zoneType, listener)
-                ).timeout(netConfig.timeout, TimeUnit.MILLISECONDS))
+    private fun requestAdFromWaterfall(
+        context: Context,
+        zoneConfig: ZoneConfigEntity,
+        listener: AdRequestListener
+    ) {
+        val adReqSingles = mutableListOf<Single<AdState>>()
+        zoneConfig.waterfall.forEach { netConfig ->
+            if (netConfig.adNetwork in networks.keys) {
+                adReqSingles.add(
+                    Single.just(
+                        networks[netConfig.adNetwork]!!.requestAd(
+                            context,
+                            netConfig.zoneId,
+                            zoneConfig.zoneType,
+                            listener
+                        )
+                    ).timeout(netConfig.timeout, TimeUnit.MILLISECONDS)
+                )
             }
         }
 
-        Single.concat(singles)
+        Single.concat(adReqSingles)
             .firstElement()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .flatMap{state ->
+            .flatMap { state ->
                 adRepository.saveAdState(state)
                 Maybe.just(state)
             }
@@ -102,12 +113,12 @@ class Mediator {
             }
     }
 
-    fun showAd(activity: Activity, zoneId: String, listener: AdShowListener){
+    fun showAd(activity: Activity, zoneId: String, listener: AdShowListener) {
         adRepository.getAdState()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({state ->
-                if (state.id != "" && state.network in networks.keys){
+            .subscribe({ state ->
+                if (state.id != "" && state.network in networks.keys) {
                     networks[state.network]!!.showAd(activity, state, zoneId, listener)
                 }
             }, {

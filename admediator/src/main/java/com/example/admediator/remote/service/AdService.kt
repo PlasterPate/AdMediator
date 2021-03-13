@@ -9,8 +9,8 @@ import retrofit2.http.Path
 internal interface AdService {
 
     @GET("/{id}/networks/")
-    fun getAdNetworks(@Path("id") appId: String) : Single<List<AdNetworkDto>>
+    fun getAdNetworks(@Path("id") appId: String): Single<List<AdNetworkDto>>
 
     @GET("/{id}/")
-    fun getZoneConfig(@Path("id") zoneId: String) : Single<ZoneConfigDto>
+    fun getZoneConfig(@Path("id") zoneId: String): Single<ZoneConfigDto>
 }

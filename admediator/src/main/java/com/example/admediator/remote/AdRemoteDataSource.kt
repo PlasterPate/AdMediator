@@ -6,7 +6,7 @@ import io.reactivex.Single
 
 internal interface AdRemoteDataSource {
 
-    fun getAdNetworks(appId: String) : Single<List<AdNetworkEntity>>
+    fun getAdNetworks(appId: String): Single<List<AdNetworkEntity>>
 
-    fun getZoneConfig(zoneId: String) : Single<ZoneConfigEntity>
+    fun getZoneConfig(zoneId: String): Single<ZoneConfigEntity>
 }

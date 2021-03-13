@@ -13,7 +13,7 @@ import com.unity3d.ads.UnityAds.FinishState
 import com.unity3d.ads.UnityAds.UnityAdsError
 
 
-internal class UnityNetwork(appId: String) : BaseNetwork(appId){
+internal class UnityNetwork(appId: String) : BaseNetwork(appId) {
 
     private lateinit var adReqListener: AdRequestListener
 
@@ -27,18 +27,28 @@ internal class UnityNetwork(appId: String) : BaseNetwork(appId){
         UnityAds.initialize(application, appId)
     }
 
-    override fun requestAd(context: Context, zoneId: String, zoneType: String, listener: AdRequestListener) : AdState{
+    override fun requestAd(
+        context: Context,
+        zoneId: String,
+        zoneType: String,
+        listener: AdRequestListener
+    ): AdState {
         adReqListener = listener
-        if (reqResponse.id != ""){
+        if (reqResponse.id != "") {
             adReqListener.onAdAvailable(reqResponse.id)
             return reqResponse
-        }else{
+        } else {
             adReqListener.onError("Unity ad not available.")
             throw Exception("Unity ad not available.")
         }
     }
 
-    override fun showAd(activity: Activity, adState: AdState, zoneId: String, listener: AdShowListener) {
+    override fun showAd(
+        activity: Activity,
+        adState: AdState,
+        zoneId: String,
+        listener: AdShowListener
+    ) {
         adShowListener = listener
         if (UnityAds.isReady(adState.id)) {
             UnityAds.show(activity, adState.id)
@@ -63,8 +73,8 @@ internal class UnityNetwork(appId: String) : BaseNetwork(appId){
             surfacingId: String,
             finishState: FinishState
         ) {
-            when(finishState){
-                FinishState.COMPLETED ->{
+            when (finishState) {
+                FinishState.COMPLETED -> {
                     adShowListener.onRewarded(true)
                     // Reset the adId after ad finished successfully
                     reqResponse.copy(id = "")

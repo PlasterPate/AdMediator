@@ -2,12 +2,11 @@ package com.example.admediator.networks
 
 import com.example.admediator.constants.AdNetwork
 import com.example.admediator.data.AdNetworkEntity
-import java.lang.IllegalArgumentException
 
 internal class NetworkFactory {
 
-    fun createNetwork(adNetworkEntity: AdNetworkEntity) : BaseNetwork{
-        return when(adNetworkEntity.name){
+    fun createNetwork(adNetworkEntity: AdNetworkEntity): BaseNetwork {
+        return when (adNetworkEntity.name) {
             AdNetwork.TAPSELL ->
                 TapsellNetwork(adNetworkEntity.appId)
             AdNetwork.CHARTBOOST ->
