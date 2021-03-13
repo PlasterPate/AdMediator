@@ -6,8 +6,8 @@ First you should initialize the SDK before trying to launch the Ad.
 
     val mediator = AdMediator()
     mediator.initialize(application: Application,
-					    appId: String,
-						listener: InitializeListener)
+				     appId: String,
+				     listener: InitializeListener)
 By implementing `InitializeListener` you can run your own code on different callbacks of this method.
 |Method|Description  |
 |--|--|
@@ -18,8 +18,8 @@ By implementing `InitializeListener` you can run your own code on different call
 Next you should request an Ad before showing it. SDK will search different Ad networks and cache the first available Ad.
 
     mediator.requestAd(context: Context,
-				       zoneId: String,
-					   listener: AdRequestListener)
+		       zoneId: String,
+		       listener: AdRequestListener)
 By implementing `AdRequestListener` you can run your own code on different callbacks of this method.
 |Method|Description  |
 |--|--|
@@ -29,8 +29,8 @@ By implementing `AdRequestListener` you can run your own code on different callb
 Finally you can show the Ad using this method.
 
     mediator.showAd(activity: Activity,
-				    zoneId: String,
-				    listener: AdShowListener)
+			      zoneId: String,
+			      listener: AdShowListener)
 By implementing `AdShowListener` you can run your own code on different callbacks of this method.
 |Method|Description  |
 |--|--|
