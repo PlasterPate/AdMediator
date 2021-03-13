@@ -1,6 +1,7 @@
 package com.example.admediator.local
 
 import android.content.SharedPreferences
+import com.example.admediator.data.AdState
 import com.example.admediator.data.ZoneConfigEntity
 import com.google.gson.Gson
 import io.reactivex.Completable
@@ -23,9 +24,9 @@ class AdLocalDataSourceImpl(private var sharedPreferences: SharedPreferences) : 
         val zoneConfig = sharedPreferences.getString(KEY_ZONECONFIG.plus(zoneId), null)
         return Single.just(
             zoneConfig?.let {
-                    Gson().fromJson(it, ZoneConfigEntity::class.java)
+                Gson().fromJson(it, ZoneConfigEntity::class.java)
             } ?: // Return an empty entity if no config found
-            ZoneConfigEntity("", listOf(), 0)
+                ZoneConfigEntity("", listOf(), 0)
         )
     }
 
@@ -37,21 +38,25 @@ class AdLocalDataSourceImpl(private var sharedPreferences: SharedPreferences) : 
         }
     }
 
-    override fun saveAdId(adId: String): Completable {
+    override fun saveAdState(adState: AdState): Completable {
         return Completable.fromAction {
             sharedPreferences.edit().apply{
-                putString(KEY_AD_ID.plus(adId), adId)
+                putString(KEY_AD_ID, Gson().toJson(adState))
             }
         }
     }
 
-    override fun getAdId(): Single<String> {
+    override fun getAdState(): Single<AdState> {
+        val adState = sharedPreferences.getString(KEY_AD_ID, null)
         return Single.just(
-            sharedPreferences.getString(KEY_AD_ID, "")
+            adState?.let {
+                Gson().fromJson(adState, AdState::class.java)
+            }?:
+                AdState("", "", "")
         )
     }
 
-    override fun removeAdId(): Completable {
+    override fun removeAdState(): Completable {
         return Completable.fromAction {
             sharedPreferences.edit().apply{
                 remove(KEY_AD_ID)

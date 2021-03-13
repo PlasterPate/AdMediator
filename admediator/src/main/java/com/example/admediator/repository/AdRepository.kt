@@ -3,6 +3,7 @@ package com.example.admediator.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.admediator.data.AdNetworkEntity
+import com.example.admediator.data.AdState
 import com.example.admediator.data.ZoneConfigEntity
 import com.example.admediator.local.AdLocalDataSourceImpl
 import com.example.admediator.remote.AdRemoteDataSourceImpl
@@ -40,12 +41,15 @@ class AdRepository {
         return adLocalDS.removeZoneConfig(zoneId)
     }
 
-    fun saveAdId(adId: String): Completable{
-        return adLocalDS.saveAdId(adId)
+    fun saveAdState(adState: AdState): Completable{
+        return adLocalDS.saveAdState(adState)
     }
 
-    fun getAdId() : Single<String>{
-        return adLocalDS.getAdId()
+    fun getAdState() : Single<AdState>{
+        return adLocalDS.getAdState().map { adId ->
+            adLocalDS.removeAdState()
+            adId
+        }
     }
 
     fun initSharedPreferences(context: Context){

@@ -1,5 +1,6 @@
 package com.example.admediator.local
 
+import com.example.admediator.data.AdState
 import com.example.admediator.data.NetworkConfigEntity
 import com.example.admediator.data.ZoneConfigEntity
 import io.reactivex.Completable
@@ -13,9 +14,9 @@ interface AdLocalDataSource {
 
     fun removeZoneConfig(zoneId: String) : Completable
 
-    fun saveAdId(adId: String) : Completable
+    fun saveAdState(adState: AdState) : Completable
 
-    fun getAdId() : Single<String>
+    fun getAdState() : Single<AdState>
 
-    fun removeAdId() : Completable
+    fun removeAdState() : Completable
 }
