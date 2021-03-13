@@ -2,6 +2,7 @@ package com.example.admediator.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.admediator.constants.Strings
 import com.example.admediator.data.AdNetworkEntity
 import com.example.admediator.data.AdState
 import com.example.admediator.data.ZoneConfigEntity
@@ -58,7 +59,7 @@ internal class AdRepository {
     fun initSharedPreferences(context: Context) {
         if (!this::sharedPreferences.isInitialized) {
             sharedPreferences =
-                context.getSharedPreferences("ad_mediator_shared_pref", Context.MODE_PRIVATE)
+                context.getSharedPreferences(Strings.sharepreferences_name, Context.MODE_PRIVATE)
         }
     }
 }

@@ -4,7 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import com.example.admediator.R
 import com.example.admediator.constants.AdNetwork
+import com.example.admediator.constants.Strings
 import com.example.admediator.data.AdState
 import com.example.admediator.listeners.AdRequestListener
 import com.example.admediator.listeners.AdShowListener
@@ -31,9 +33,9 @@ internal class TapsellNetwork(appId: String) : BaseNetwork(appId) {
                 }
 
                 override fun onError(message: String?) {
-                    Log.w("Mediator", message!!)
+                    Log.e("TapsellNetwork", "requestAd: ".plus(message!!))
                     listener.onError(message)
-                    throw Exception("Tapsell ad not available.")
+                    throw Exception(Strings.tapsell_ad_not_available)
                 }
             })
         return reqResponse

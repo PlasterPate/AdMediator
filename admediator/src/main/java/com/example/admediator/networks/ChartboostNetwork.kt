@@ -3,10 +3,12 @@ package com.example.admediator.networks
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.chartboost.sdk.Chartboost
 import com.chartboost.sdk.ChartboostDelegate
 import com.chartboost.sdk.Model.CBError
 import com.example.admediator.constants.AdNetwork
+import com.example.admediator.constants.Strings
 import com.example.admediator.constants.ZoneType
 import com.example.admediator.data.AdState
 import com.example.admediator.listeners.AdRequestListener
@@ -62,8 +64,9 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId) {
             location: String?,
             error: CBError.CBImpressionError?
         ) {
+            Log.e("ChartboostNetwork", "requestAd: ".plus(error.toString()))
             adReqListener.onError(error.toString())
-            throw Exception("Chartboost ad not available.")
+            throw Exception(Strings.chartboost_ad_not_available)
         }
 
         // --------Rewarded delegate methods--------
@@ -77,8 +80,9 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId) {
             location: String?,
             error: CBError.CBImpressionError?
         ) {
+            Log.e("ChartboostNetwork", "requestAd: ".plus(error.toString()))
             adReqListener.onError(error.toString())
-            throw Exception("Chartboost ad not available.")
+            throw Exception(Strings.chartboost_ad_not_available)
         }
     }
 
@@ -95,13 +99,13 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId) {
                 if (Chartboost.hasInterstitial(adState.id))
                     Chartboost.showInterstitial(adState.id)
                 else
-                    listener.onError("Chartboost ad not available.")
+                    listener.onError(Strings.chartboost_ad_not_available)
             }
             ZoneType.REWARDED -> {
                 if (Chartboost.hasRewardedVideo(adState.id))
                     Chartboost.showRewardedVideo(adState.id)
                 else
-                    listener.onError("Chartboost ad not available.")
+                    listener.onError(Strings.chartboost_ad_not_available)
             }
             else -> {
             }
@@ -124,6 +128,7 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId) {
             location: String?,
             error: CBError.CBImpressionError?
         ) {
+            Log.e("ChartboostNetwork", "showAd: ".plus(error.toString()))
             adShowListener.onError(error.toString())
         }
 
@@ -145,6 +150,7 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId) {
             location: String?,
             error: CBError.CBImpressionError?
         ) {
+            Log.e("ChartboostNetwork", "showAd: ".plus(error.toString()))
             adShowListener.onError(error.toString())
         }
 

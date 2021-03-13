@@ -13,7 +13,9 @@ internal class NetworkFactory {
                 ChartboostNetwork(adNetworkEntity.appId)
             AdNetwork.UNITY_ADS ->
                 UnityNetwork(adNetworkEntity.appId)
-            else -> throw IllegalArgumentException("There is no ${adNetworkEntity.name} network available")
+            else -> throw IllegalArgumentException(
+                "There is no ${adNetworkEntity.name} network available"
+            )
         }
     }
 }

@@ -3,7 +3,9 @@ package com.example.admediator.networks
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.example.admediator.constants.AdNetwork
+import com.example.admediator.constants.Strings
 import com.example.admediator.data.AdState
 import com.example.admediator.listeners.AdRequestListener
 import com.example.admediator.listeners.AdShowListener
@@ -38,8 +40,8 @@ internal class UnityNetwork(appId: String) : BaseNetwork(appId) {
             adReqListener.onAdAvailable(reqResponse.id)
             return reqResponse
         } else {
-            adReqListener.onError("Unity ad not available.")
-            throw Exception("Unity ad not available.")
+            adReqListener.onError(Strings.unity_ad_not_available)
+            throw Exception(Strings.unity_ad_not_available)
         }
     }
 
@@ -81,7 +83,7 @@ internal class UnityNetwork(appId: String) : BaseNetwork(appId) {
                     adShowListener.onClosed()
                 }
                 FinishState.ERROR -> {
-                    adShowListener.onError("Unity faced an error while showing the ad")
+                    adShowListener.onError(Strings.unity_ad_show_error)
                 }
                 FinishState.SKIPPED -> {
                     adShowListener.onClosed()
@@ -94,12 +96,14 @@ internal class UnityNetwork(appId: String) : BaseNetwork(appId) {
             message: String
         ) {
             if (this@UnityNetwork::adReqListener.isInitialized) {
-                adReqListener.onError("Unity ad not available.")
+                Log.e("UnityNetwork", error.toString())
+                adReqListener.onError(Strings.unity_ad_not_available)
             }
             if (this@UnityNetwork::adShowListener.isInitialized) {
-                adShowListener.onError("Unity-ads service error.")
+                Log.e("UnityNetwork", error.toString())
+                adShowListener.onError(Strings.unity_ads_service_error)
             }
-            throw Exception("Unity-ads service error.")
+            throw Exception(Strings.unity_ads_service_error)
         }
     }
 }
