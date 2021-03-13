@@ -33,6 +33,9 @@ class ChartboostUtil {
         }
 
         private val chartboostCacheDelegate: ChartboostDelegate = object : ChartboostDelegate() {
+
+            // --------Interstitial delegate methods--------
+
             override fun didCacheInterstitial(location: String?) {
                 response = response.copy(network = AdNetwork.CHARTBOOST, id = location!!)
                 adListener.onAdAvailable(location)
@@ -45,6 +48,8 @@ class ChartboostUtil {
                 adListener.onError(error.toString())
                 throw Exception("Chartboost ad not available.")
             }
+
+            // --------Rewarded delegate methods--------
 
             override fun didCacheRewardedVideo(location: String?) {
                 response = response.copy(network = AdNetwork.CHARTBOOST, id = location!!)
@@ -76,6 +81,47 @@ class ChartboostUtil {
 
         private val chartboostShowDelegate: ChartboostDelegate = object : ChartboostDelegate(){
 
+            // --------Interstitial delegate methods--------
+
+            override fun didDisplayInterstitial(location: String?) {
+                adShowListener.onOpened()
+            }
+
+            override fun didCloseInterstitial(location: String?) {
+                adShowListener.onClosed()
+            }
+
+            override fun didFailToLoadInterstitial(
+                location: String?,
+                error: CBError.CBImpressionError?
+            ) {
+                adShowListener.onError(error.toString())
+            }
+
+            override fun didCompleteInterstitial(location: String?) {
+                adShowListener.onRewarded(true)
+            }
+
+            // --------Rewarded delegate methods--------
+
+            override fun didDisplayRewardedVideo(location: String?) {
+                adShowListener.onOpened()
+            }
+
+            override fun didCloseRewardedVideo(location: String?) {
+                adShowListener.onClosed()
+            }
+
+            override fun didFailToLoadRewardedVideo(
+                location: String?,
+                error: CBError.CBImpressionError?
+            ) {
+                adShowListener.onError(error.toString())
+            }
+
+            override fun didCompleteRewardedVideo(location: String?, reward: Int) {
+                adShowListener.onRewarded(true)
+            }
         }
     }
 }
