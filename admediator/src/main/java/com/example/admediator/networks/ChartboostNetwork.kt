@@ -133,7 +133,7 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId) {
         }
 
         override fun didCompleteInterstitial(location: String?) {
-            adShowListener.onRewarded(true)
+            adShowListener.onRewarded(false)
         }
 
         // --------Rewarded delegate methods--------

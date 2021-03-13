@@ -79,13 +79,12 @@ internal class UnityNetwork(appId: String) : BaseNetwork(appId) {
                     adShowListener.onRewarded(true)
                     // Reset the adId after ad finished successfully
                     reqResponse.copy(id = "")
-                    adShowListener.onClosed()
                 }
                 FinishState.ERROR -> {
                     adShowListener.onError(Strings.unity_ad_show_error)
                 }
                 FinishState.SKIPPED -> {
-                    adShowListener.onClosed()
+                    adShowListener.onRewarded(false)
                 }
             }
         }
