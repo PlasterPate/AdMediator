@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import com.example.admediator.constants.Strings
 import com.example.admediator.data.AdNetworkEntity
 import com.example.admediator.data.AdState
 import com.example.admediator.data.ZoneConfigEntity
@@ -124,6 +125,9 @@ class Mediator {
             .subscribe({ state ->
                 if (state.id != "" && state.network in networks.keys) {
                     networks[state.network]!!.showAd(activity, state, zoneId, listener)
+                }else{
+                    Log.e(TAG, "showAd:".plus(Strings.ad_not_cached))
+                    listener.onError(Strings.ad_not_cached)
                 }
             }, {
                 Log.e(TAG, "showAd:".plus(it.message))

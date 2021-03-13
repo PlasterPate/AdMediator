@@ -5,7 +5,11 @@ internal object Strings {
     // We use a strings object instead of string resources, because we need
     // context to access string resources, but we don't have access to context everywhere
 
+    // GENERAL
+
     const val sharepreferences_name = "ad_mediator_shared_pref"
+
+    const val ad_not_cached = "There is no cached ad available. First request the ad."
 
     // TAPSELL
 
