@@ -9,6 +9,8 @@ import com.example.admediator.listeners.AdShowListener
 
 internal abstract class BaseNetwork(val appId: String) {
 
+    protected abstract var reqResponse: AdState
+
     abstract fun initialize(application: Application)
 
     abstract fun requestAd(

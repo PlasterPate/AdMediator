@@ -21,8 +21,7 @@ internal class UnityNetwork(appId: String) : BaseNetwork(appId) {
 
     private lateinit var adShowListener: AdShowListener
 
-    private var reqResponse = AdState(AdNetwork.UNITY_ADS, "", "")
-
+    override var reqResponse = AdState(AdNetwork.UNITY_ADS, "", "")
 
     override fun initialize(application: Application) {
         UnityAds.addListener(unityAdsListener)

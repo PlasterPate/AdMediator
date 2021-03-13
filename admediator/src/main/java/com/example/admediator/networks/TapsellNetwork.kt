@@ -13,7 +13,7 @@ import com.example.admediator.listeners.AdShowListener
 import ir.tapsell.sdk.*
 
 internal class TapsellNetwork(appId: String) : BaseNetwork(appId) {
-    private var reqResponse = AdState(AdNetwork.TAPSELL, "", "")
+    override var reqResponse = AdState(AdNetwork.TAPSELL, "", "")
 
     override fun initialize(application: Application) {
         Tapsell.initialize(application, appId)

@@ -22,7 +22,7 @@ internal class ChartboostNetwork(appId: String) : BaseNetwork(appId) {
 
     private lateinit var adShowListener: AdShowListener
 
-    private var reqResponse = AdState(AdNetwork.CHARTBOOST, "", "")
+    override var reqResponse = AdState(AdNetwork.CHARTBOOST, "", "")
 
     override fun initialize(application: Application) {
         Chartboost.startWithAppId(application, appId, CB_SIGNATURE)
