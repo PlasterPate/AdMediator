@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-object ServiceBuilder {
+internal object ServiceBuilder {
     private const val BASE_URL: String = "http://123.123.123.123:4444/api/"
 
     private val retrofit = Retrofit.Builder()

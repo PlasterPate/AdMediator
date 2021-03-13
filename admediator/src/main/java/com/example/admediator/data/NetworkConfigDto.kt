@@ -2,7 +2,7 @@ package com.example.admediator.data
 
 import com.google.gson.annotations.SerializedName
 
-data class NetworkConfigDto(
+internal data class NetworkConfigDto(
     @SerializedName("adNetwork")
     val adNetwork: String,
     @SerializedName("zoneId")

@@ -9,7 +9,7 @@ import com.example.admediator.data.AdState
 import com.example.admediator.listeners.AdRequestListener
 import com.example.admediator.listeners.AdShowListener
 
-class ChartboostUtil {
+internal class ChartboostUtil {
     companion object {
         private lateinit var adListener: AdRequestListener
         private lateinit var adShowListener: AdShowListener
@@ -70,10 +70,16 @@ class ChartboostUtil {
             Chartboost.setDelegate(chartboostShowDelegate)
             when (adState.type) {
                 ZoneType.INTERSTITIAL -> {
-                    Chartboost.showInterstitial(adState.id)
+                    if (Chartboost.hasInterstitial(adState.id))
+                        Chartboost.showInterstitial(adState.id)
+                    else
+                        listener.onError("Chartboost ad not available.")
                 }
                 ZoneType.REWARDED -> {
-                    Chartboost.showRewardedVideo(adState.id)
+                    if (Chartboost.hasRewardedVideo(adState.id))
+                        Chartboost.showRewardedVideo(adState.id)
+                    else
+                        listener.onError("Chartboost ad not available.")
                 }
                 else -> {}
             }

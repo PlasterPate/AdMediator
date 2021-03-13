@@ -1,6 +1,6 @@
 package com.example.admediator.constants
 
-object ZoneType {
+internal object ZoneType {
     const val REWARDED = "Rewarded"
     const val INTERSTITIAL = "Interstitial"
 }

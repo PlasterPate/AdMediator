@@ -8,7 +8,7 @@ import com.example.admediator.listeners.AdRequestListener
 import com.example.admediator.listeners.AdShowListener
 import ir.tapsell.sdk.*
 
-class TapsellUtil {
+internal class TapsellUtil {
     companion object {
         private var response = AdState("", "", "")
 

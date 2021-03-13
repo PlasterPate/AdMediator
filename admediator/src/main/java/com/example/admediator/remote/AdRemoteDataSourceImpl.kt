@@ -7,7 +7,7 @@ import com.example.admediator.toAdNetworkEntity
 import com.example.admediator.toZoneConfigEntity
 import io.reactivex.Single
 
-class AdRemoteDataSourceImpl(private val adService: AdService) : AdRemoteDataSource {
+internal class AdRemoteDataSourceImpl(private val adService: AdService) : AdRemoteDataSource {
     override fun getAdNetworks(appId: String): Single<List<AdNetworkEntity>> {
         return adService.getAdNetworks(appId).map {networkList ->
             networkList.map {networkDto ->

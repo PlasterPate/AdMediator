@@ -6,7 +6,7 @@ import com.example.admediator.data.ZoneConfigEntity
 import io.reactivex.Completable
 import io.reactivex.Single
 
-interface AdLocalDataSource {
+internal interface AdLocalDataSource {
 
     fun saveZoneConfig(zoneId: String, zoneConfig: ZoneConfigEntity) : Completable
 

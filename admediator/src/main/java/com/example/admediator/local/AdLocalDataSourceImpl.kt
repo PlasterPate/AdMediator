@@ -7,7 +7,7 @@ import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Single
 
-class AdLocalDataSourceImpl(private var sharedPreferences: SharedPreferences) : AdLocalDataSource {
+internal class AdLocalDataSourceImpl(private var sharedPreferences: SharedPreferences) : AdLocalDataSource {
 
     private val KEY_ZONECONFIG = "zoneconfig."
     private val KEY_AD_ID = "ad_id."

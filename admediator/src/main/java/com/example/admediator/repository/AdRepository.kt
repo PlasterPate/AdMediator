@@ -12,7 +12,7 @@ import com.example.admediator.remote.service.ServiceBuilder
 import io.reactivex.Completable
 import io.reactivex.Single
 
-class AdRepository {
+internal class AdRepository {
 
     private val adService = ServiceBuilder.buildService(AdService::class.java)
     private lateinit var sharedPreferences: SharedPreferences
