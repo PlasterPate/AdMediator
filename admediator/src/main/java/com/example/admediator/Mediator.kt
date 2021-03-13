@@ -49,9 +49,9 @@ class Mediator {
         networks.forEach{ net ->
             when(net.name){
                 AdNetwork.TAPSELL ->
-                    Tapsell.initialize(application, net.appId)
+                    TapsellUtil.initialize(application, net.appId)
                 AdNetwork.CHARTBOOST ->
-                    Chartboost.startWithAppId(application, net.appId, CB_SIGNATURE)
+                    ChartboostUtil.initialize(application, net.appId)
                 AdNetwork.UNITY_ADS ->
                     UnityUtil.initialize(application, net.appId)
             }

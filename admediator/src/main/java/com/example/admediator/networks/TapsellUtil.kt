@@ -1,5 +1,7 @@
 package com.example.admediator.networks
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.example.admediator.constants.AdNetwork
@@ -10,13 +12,17 @@ import ir.tapsell.sdk.*
 
 internal class TapsellUtil {
     companion object {
-        private var response = AdState("", "", "")
+        private var reqResponse = AdState(AdNetwork.TAPSELL, "", "")
+
+        fun initialize(application: Application, appId: String){
+            Tapsell.initialize(application, appId)
+        }
 
         fun requestAd(context: Context, zoneId: String, listener: AdRequestListener) : AdState {
             Tapsell.requestAd(context, zoneId, TapsellAdRequestOptions(),
                 object : TapsellAdRequestListener() {
                     override fun onAdAvailable(adId: String?) {
-                        response = response.copy(network = AdNetwork.TAPSELL, id = adId!!)
+                        reqResponse = reqResponse.copy(id = adId!!)
                         listener.onAdAvailable(adId)
                     }
 
@@ -26,11 +32,11 @@ internal class TapsellUtil {
                         throw Exception("Tapsell ad not available.")
                     }
                 })
-            return response
+            return reqResponse
         }
 
-        fun showAd(context: Context, zoneId: String, adId: String, listener: AdShowListener){
-            Tapsell.showAd(context, zoneId, adId, TapsellShowOptions(),
+        fun showAd(activity: Activity, zoneId: String, adId: String, listener: AdShowListener){
+            Tapsell.showAd(activity, zoneId, adId, TapsellShowOptions(),
             object : TapsellAdShowListener(){
                 override fun onOpened() {
                     listener.onOpened()

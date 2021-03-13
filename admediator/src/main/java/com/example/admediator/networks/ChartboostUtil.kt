@@ -1,5 +1,6 @@
 package com.example.admediator.networks
 
+import android.app.Application
 import com.chartboost.sdk.Chartboost
 import com.chartboost.sdk.ChartboostDelegate
 import com.chartboost.sdk.Model.CBError
@@ -11,25 +12,33 @@ import com.example.admediator.listeners.AdShowListener
 
 internal class ChartboostUtil {
     companion object {
-        private lateinit var adListener: AdRequestListener
+        private val CB_SIGNATURE = "dummy_signature"
+
+        private lateinit var adReqListener: AdRequestListener
+
         private lateinit var adShowListener: AdShowListener
-        private var response = AdState("", "", "")
+
+        private var reqResponse = AdState(AdNetwork.CHARTBOOST, "", "")
+
+        fun initialize(application: Application, appId: String){
+            Chartboost.startWithAppId(application, appId, CB_SIGNATURE)
+        }
 
         fun requestAd(zoneId: String, zoneType: String, listener: AdRequestListener) : AdState {
-            adListener = listener
+            adReqListener = listener
             Chartboost.setDelegate(chartboostCacheDelegate)
             when (zoneType) {
                 ZoneType.INTERSTITIAL -> {
-                    response = response.copy(type = ZoneType.INTERSTITIAL)
+                    reqResponse = reqResponse.copy(type = ZoneType.INTERSTITIAL)
                     Chartboost.cacheInterstitial(zoneId)
                 }
                 ZoneType.REWARDED -> {
-                    response = response.copy(type = ZoneType.REWARDED)
+                    reqResponse = reqResponse.copy(type = ZoneType.REWARDED)
                     Chartboost.cacheRewardedVideo(zoneId)
                 }
                 else -> {}
             }
-            return response
+            return reqResponse
         }
 
         private val chartboostCacheDelegate: ChartboostDelegate = object : ChartboostDelegate() {
@@ -37,30 +46,30 @@ internal class ChartboostUtil {
             // --------Interstitial delegate methods--------
 
             override fun didCacheInterstitial(location: String?) {
-                response = response.copy(network = AdNetwork.CHARTBOOST, id = location!!)
-                adListener.onAdAvailable(location)
+                reqResponse = reqResponse.copy(id = location!!)
+                adReqListener.onAdAvailable(location)
             }
 
             override fun didFailToLoadInterstitial(
                 location: String?,
                 error: CBError.CBImpressionError?
             ) {
-                adListener.onError(error.toString())
+                adReqListener.onError(error.toString())
                 throw Exception("Chartboost ad not available.")
             }
 
             // --------Rewarded delegate methods--------
 
             override fun didCacheRewardedVideo(location: String?) {
-                response = response.copy(network = AdNetwork.CHARTBOOST, id = location!!)
-                adListener.onAdAvailable(location)
+                reqResponse = reqResponse.copy(network = AdNetwork.CHARTBOOST, id = location!!)
+                adReqListener.onAdAvailable(location)
             }
 
             override fun didFailToLoadRewardedVideo(
                 location: String?,
                 error: CBError.CBImpressionError?
             ) {
-                adListener.onError(error.toString())
+                adReqListener.onError(error.toString())
                 throw Exception("Chartboost ad not available.")
             }
         }
