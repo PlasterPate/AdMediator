@@ -1,9 +1,9 @@
 package com.example.admediator
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import com.chartboost.sdk.Chartboost
 import com.example.admediator.constants.AdNetwork
 import com.example.admediator.data.AdNetworkEntity
 import com.example.admediator.data.AdState
@@ -13,26 +13,21 @@ import com.example.admediator.listeners.AdShowListener
 import com.example.admediator.listeners.InitializeListener
 import com.example.admediator.networks.ChartboostUtil
 import com.example.admediator.networks.TapsellUtil
+import com.example.admediator.networks.UnityUtil
 import com.example.admediator.repository.AdRepository
-import com.unity3d.ads.UnityAds
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import ir.tapsell.sdk.Tapsell
 import java.util.concurrent.TimeUnit
 
 
 class Mediator {
 
-    private val CB_SIGNATURE = "dummy_signature"
-
     private val adRepository = AdRepository()
 
     private lateinit var networks: List<AdNetworkEntity>
-
-//    private var availableAdNetwork = ""
 
     fun initialize(application: Application, appId: String, listener: InitializeListener){
         adRepository.getAdNetworks(appId)
@@ -58,7 +53,7 @@ class Mediator {
                 AdNetwork.CHARTBOOST ->
                     Chartboost.startWithAppId(application, net.appId, CB_SIGNATURE)
                 AdNetwork.UNITY_ADS ->
-                    UnityAds.initialize(application, net.appId)
+                    UnityUtil.initialize(application, net.appId)
             }
         }
     }
@@ -102,8 +97,11 @@ class Mediator {
                         ChartboostUtil.requestAd(netConfig.zoneId, zoneConfig.zoneType, listener)
                     ))
                 }
-
-//                AdNetwork.UNITY_ADS ->
+                AdNetwork.UNITY_ADS -> {
+                    singles.add(Single.just(
+                        UnityUtil.requestAd(listener)
+                    ))
+                }
             }
         }
 
@@ -123,13 +121,13 @@ class Mediator {
     }
 
 
-    fun showAd(context: Context, zoneId: String, listener: AdShowListener){
+    fun showAd(activity: Activity, zoneId: String, listener: AdShowListener){
         adRepository.getAdState()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({state ->
                 if (state.id != ""){
-                    showAdFromNetwork(context, zoneId, state, listener)
+                    showAdFromNetwork(activity, zoneId, state, listener)
                 }
             }, {
                 Log.e("Mediator", "ShowAdError:".plus(it.message))
@@ -138,15 +136,17 @@ class Mediator {
             }
     }
 
-    private fun showAdFromNetwork(context: Context, zoneId: String, adState: AdState, listener: AdShowListener){
+    private fun showAdFromNetwork(activity: Activity, zoneId: String, adState: AdState, listener: AdShowListener){
         when(adState.network){
             AdNetwork.TAPSELL ->{
-                TapsellUtil.showAd(context, zoneId, adState.id, listener)
+                TapsellUtil.showAd(activity, zoneId, adState.id, listener)
             }
             AdNetwork.CHARTBOOST ->{
                 ChartboostUtil.showAd(adState, listener)
             }
-//            AdNetwork.UNITY_ADS ->{}
+            AdNetwork.UNITY_ADS ->{
+                UnityUtil.showAd(activity, adState.id, listener)
+            }
         }
     }
 }
