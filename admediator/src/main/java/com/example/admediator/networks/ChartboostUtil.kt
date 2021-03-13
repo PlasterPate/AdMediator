@@ -5,23 +5,26 @@ import com.chartboost.sdk.ChartboostDelegate
 import com.chartboost.sdk.Model.CBError
 import com.example.admediator.constants.AdNetwork
 import com.example.admediator.constants.ZoneType
-import com.example.admediator.data.AdResponse
+import com.example.admediator.data.AdState
 import com.example.admediator.listeners.AdRequestListener
-import java.time.ZoneId
+import com.example.admediator.listeners.AdShowListener
 
 class ChartboostUtil {
     companion object {
         private lateinit var adListener: AdRequestListener
-        private var response = AdResponse("", "")
+        private lateinit var adShowListener: AdShowListener
+        private var response = AdState("", "", "")
 
-        fun requestAd(zoneId: String, zoneType: String, listener: AdRequestListener) : AdResponse {
+        fun requestAd(zoneId: String, zoneType: String, listener: AdRequestListener) : AdState {
             adListener = listener
-            Chartboost.setDelegate(chartboostDelegateCache)
+            Chartboost.setDelegate(chartboostCacheDelegate)
             when (zoneType) {
                 ZoneType.INTERSTITIAL -> {
+                    response = response.copy(type = ZoneType.INTERSTITIAL)
                     Chartboost.cacheInterstitial(zoneId)
                 }
                 ZoneType.REWARDED -> {
+                    response = response.copy(type = ZoneType.REWARDED)
                     Chartboost.cacheRewardedVideo(zoneId)
                 }
                 else -> {}
@@ -29,9 +32,9 @@ class ChartboostUtil {
             return response
         }
 
-        private val chartboostDelegateCache: ChartboostDelegate = object : ChartboostDelegate() {
+        private val chartboostCacheDelegate: ChartboostDelegate = object : ChartboostDelegate() {
             override fun didCacheInterstitial(location: String?) {
-                response = AdResponse(AdNetwork.CHARTBOOST, location!!)
+                response = response.copy(network = AdNetwork.CHARTBOOST, id = location!!)
                 adListener.onAdAvailable(location)
             }
 
@@ -44,7 +47,7 @@ class ChartboostUtil {
             }
 
             override fun didCacheRewardedVideo(location: String?) {
-                response = AdResponse(AdNetwork.CHARTBOOST, location!!)
+                response = response.copy(network = AdNetwork.CHARTBOOST, id = location!!)
                 adListener.onAdAvailable(location)
             }
 
@@ -55,6 +58,24 @@ class ChartboostUtil {
                 adListener.onError(error.toString())
                 throw Exception("Chartboost ad not available.")
             }
+        }
+
+        fun showAd(adState: AdState, listener: AdShowListener){
+            adShowListener = listener
+            Chartboost.setDelegate(chartboostShowDelegate)
+            when (adState.type) {
+                ZoneType.INTERSTITIAL -> {
+                    Chartboost.showInterstitial(adState.id)
+                }
+                ZoneType.REWARDED -> {
+                    Chartboost.showRewardedVideo(adState.id)
+                }
+                else -> {}
+            }
+        }
+
+        private val chartboostShowDelegate: ChartboostDelegate = object : ChartboostDelegate(){
+
         }
     }
 }

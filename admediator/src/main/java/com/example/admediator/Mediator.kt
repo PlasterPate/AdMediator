@@ -6,9 +6,10 @@ import android.util.Log
 import com.chartboost.sdk.Chartboost
 import com.example.admediator.constants.AdNetwork
 import com.example.admediator.data.AdNetworkEntity
-import com.example.admediator.data.AdResponse
+import com.example.admediator.data.AdState
 import com.example.admediator.data.ZoneConfigEntity
 import com.example.admediator.listeners.AdRequestListener
+import com.example.admediator.listeners.AdShowListener
 import com.example.admediator.listeners.InitializeListener
 import com.example.admediator.networks.ChartboostUtil
 import com.example.admediator.networks.TapsellUtil
@@ -31,7 +32,7 @@ class Mediator {
 
     private lateinit var networks: List<AdNetworkEntity>
 
-    private var availableAdNetwork = ""
+//    private var availableAdNetwork = ""
 
     fun initialize(application: Application, appId: String, listener: InitializeListener){
         adRepository.getAdNetworks(appId)
@@ -88,7 +89,7 @@ class Mediator {
     }
 
     private fun requestAdFromWaterfall(context: Context, zoneConfig: ZoneConfigEntity, listener: AdRequestListener){
-        val singles = mutableListOf<Single<AdResponse>>()
+        val singles = mutableListOf<Single<AdState>>()
         zoneConfig.waterfall.forEach {netConfig ->
             when(netConfig.adNetwork){
                 AdNetwork.TAPSELL -> {
@@ -110,16 +111,42 @@ class Mediator {
             .firstElement()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .flatMap{
-                res -> adRepository.saveAdId(res.adId)
-                Maybe.just(res)
+            .flatMap{state ->
+                adRepository.saveAdState(state)
+                Maybe.just(state)
             }
-            .subscribe({response ->
-                availableAdNetwork = response.adNetwork
-            }, {
+            .subscribe({}, {
                 Log.e("Mediator", "RequestAdError:".plus(it.message))
             }).also {
                 CompositeDisposable(it)
             }
+    }
+
+
+    fun showAd(context: Context, zoneId: String, listener: AdShowListener){
+        adRepository.getAdState()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({state ->
+                if (state.id != ""){
+                    showAdFromNetwork(context, zoneId, state, listener)
+                }
+            }, {
+                Log.e("Mediator", "ShowAdError:".plus(it.message))
+            }).also {
+                CompositeDisposable(it)
+            }
+    }
+
+    private fun showAdFromNetwork(context: Context, zoneId: String, adState: AdState, listener: AdShowListener){
+        when(adState.network){
+            AdNetwork.TAPSELL ->{
+                TapsellUtil.showAd(context, zoneId, adState.id, listener)
+            }
+            AdNetwork.CHARTBOOST ->{
+                ChartboostUtil.showAd(adState, listener)
+            }
+//            AdNetwork.UNITY_ADS ->{}
+        }
     }
 }
