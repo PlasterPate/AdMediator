@@ -23,6 +23,10 @@ import java.util.concurrent.TimeUnit
 
 class Mediator {
 
+    companion object {
+        private val TAG: String? = Mediator::class.simpleName
+    }
+
     private val adRepository = AdRepository()
 
     private val networkFactory = NetworkFactory()
@@ -37,7 +41,7 @@ class Mediator {
                 initNetworks(netList, application)
                 listener.onSuccess()
             }, {
-                Log.e("Mediator", "InitializeError:".plus(it.message))
+                Log.e(TAG, "initialize: ".plus(it.message))
                 listener.onError(it.message!!)
             }).also {
                 CompositeDisposable(it)
@@ -61,7 +65,7 @@ class Mediator {
                 zoneConfigTimeout(zoneId, zoneConfig.timeout)
                 requestAdFromWaterfall(context, zoneConfig, listener)
             }, {
-                Log.e("Mediator", "RequestAdError:".plus(it.message))
+                Log.e(TAG, "requestAd:".plus(it.message))
                 listener.onError(it.message!!)
             }).also {
                 CompositeDisposable(it)
@@ -107,7 +111,7 @@ class Mediator {
                 Maybe.just(state)
             }
             .subscribe({}, {
-                Log.e("Mediator", "RequestAdError:".plus(it.message))
+                Log.e(TAG, "requestAd:".plus(it.message))
             }).also {
                 CompositeDisposable(it)
             }
@@ -122,7 +126,7 @@ class Mediator {
                     networks[state.network]!!.showAd(activity, state, zoneId, listener)
                 }
             }, {
-                Log.e("Mediator", "ShowAdError:".plus(it.message))
+                Log.e(TAG, "showAd:".plus(it.message))
             }).also {
                 CompositeDisposable(it)
             }
